@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <title>Exercício do Pássaro</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;  }
+    </style>
+</head>
+<body>
+
+    <script>
+
+        var config = {   
+            type: Phaser.AUTO,   // altura e largura em px da cena 
+            width: 800,
+            height: 600,
+    
+            scene: {      // Determina as fases da cena 
+                preload: preload,
+                create: create,   
+                update: update
+            }
+        };
+    
+        var game = new Phaser.Game(config);  
+        var passarinho;    // Cria uma variável global para o sprite do passarinho
+    
+        function preload() {
+            this.load.image('bg', 'assets/bg_space.png');  // Carrega imagem de fundo 
+            this.load.spritesheet('bird', 'assets/bird-purple.png', {frameWidth: 75 ,frameHeight: 75});   // Carrega imagem do srpite e determina o tamanho das frames 
+        }
+    
+        function create() {
+            this.add.image(400, 300, 'bg').setScale(1.2);    
+            passarinho = this.add.sprite(100, 300, 'bird').setScale(1.3);
+              
+            // Cria a animaçao do sprite
+            this.anims.create({
+                key:'fly',
+                frames: this.anims.generateFrameNumbers('bird', { start: 0, end: 7}),   // Divide a animaçao em 9 frames 
+                frameRate: 10,   // Vlocidade da mudança de frames 
+                repeat: -1     // Seta a repetiçao desta açao 
+            });
+
+            passarinho.anims.play('fly', true);  // Seta a açao em 'true' para que ela funcione 
+        }
+    
+        function update() {
+
+            if(passarinho.x == 100){               // Se o passarinho estivr na posicao 100 no eixo X, deine-se sua orintacao correta
+                passarinho.setFlip(false, false);
+                passarinho.ida = true;   // A acao de ida é setada em true 
+            }
+
+            if (passarinho.x < 700 && passarinho.ida == true) {     // Se a acao de ida for true  sua posicao x for menor que 700 ele deve se movimentar 
+                console.log("o que acontece?");
+                passarinho.x += 5;  // velocidade de movimentacao de +5px
+            }
+
+            if (passarinho.x == 700) {                // Se a posicao em x for 700 ele deeve mudar sua orientacao 
+                passarinho.setFlip(true, false);
+                passarinho.ida = false;         // ida acaba e é setada em false 
+            }
+
+            if (passarinho.x > 100 && passarinho.ida == false) {   // se o passarinho ultrapassar 100 no eixo x e estiver voltado (ida false )
+                console.log("e o que acontece agora?");
+                passarinho.x -=5;   // Velocidade altera para -5px
+            }
+
+          
+             // Movimento vertical corrigido
+           if (passarinho.y <= 100) {
+               passarinho.sobe = false; // Ao atingir o topo, começa a descer
+            }
+
+           if (passarinho.y >= 550) {
+              passarinho.sobe = true; // Ao atingir o limite inferior, começa a subir
+            }
+
+            if (passarinho.sobe) {
+               passarinho.y -= 2; // Sobe
+            } else {
+              passarinho.y += 2; // Desce
+            }
+}
+
+    
+    </script>
+
+</body>
+</html>
+
